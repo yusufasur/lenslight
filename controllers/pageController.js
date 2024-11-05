@@ -1,9 +1,9 @@
 const getIndexPage = (req, res) => {
-  res.render("index");
+  res.render("index", { currentPage: "index" });
 };
 
 const getAboutPage = (req, res) => {
-  res.render("about");
+  res.render("about", { currentPage: "about" });
 };
 
 export { getIndexPage, getAboutPage };

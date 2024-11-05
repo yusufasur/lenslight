@@ -20,10 +20,7 @@ const getAllPhotos = async (req, res) => {
   try {
     const photos = await Photo.find({});
 
-    res.status(200).json({
-      success: true,
-      data: photos,
-    });
+    res.status(200).render("photos", { photos, currentPage: "photos" });
   } catch (err) {
     res.status(500).json({
       success: false,
