@@ -1,4 +1,5 @@
 import User from "../models/User.js";
+import bcrypt from "bcrypt";
 
 const createUser = async (req, res) => {
   try {
@@ -16,11 +17,31 @@ const createUser = async (req, res) => {
   }
 };
 
-const getAllUsers = async (req, res) => {
+const loginUser = async (req, res) => {
   try {
-    const users = await User.find({});
+    const { username, password } = req.body;
 
-    res.status(200).render("users", { users, currentPage: "users" });
+    const user = await User.findOne({ name: username });
+
+    let same = false;
+
+    if (user) {
+      same = await bcrypt.compare(password, user.password);
+    } else {
+      return res.status(401).json({
+        success: false,
+        error: "There is no such user",
+      });
+    }
+
+    if (same) {
+      res.status(200).send("You are logged in");
+    } else {
+      res.status(401).json({
+        success: false,
+        error: "Password are not matched",
+      });
+    }
   } catch (err) {
     res.status(500).json({
       success: false,
@@ -29,17 +50,4 @@ const getAllUsers = async (req, res) => {
   }
 };
 
-const getAUser = async (req, res) => {
-  try {
-    const user = await User.findById(req.params.id);
-
-    res.status(200).render("user", { user, currentPage: "users" });
-  } catch (err) {
-    res.status(500).json({
-      success: false,
-      err,
-    });
-  }
-};
-
-export { createUser, getAllUsers, getAUser };
+export { createUser, loginUser };
