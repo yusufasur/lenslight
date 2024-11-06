@@ -6,4 +6,8 @@ const getAboutPage = (req, res) => {
   res.render("about", { currentPage: "about" });
 };
 
-export { getIndexPage, getAboutPage };
+const getRegisterPage = (req, res) => {
+  res.render("register", { currentPage: "register" });
+};
+
+export { getIndexPage, getAboutPage, getRegisterPage };
