@@ -6,10 +6,7 @@ const createUser = async (req, res) => {
   try {
     const user = await User.create(req.body);
 
-    res.status(201).json({
-      success: true,
-      data: user,
-    });
+    res.redirect("/login")
   } catch (err) {
     res.status(500).json({
       success: false,
