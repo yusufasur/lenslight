@@ -6,12 +6,25 @@ const createUser = async (req, res) => {
   try {
     const user = await User.create(req.body);
 
-    res.redirect("/login")
-  } catch (err) {
-    res.status(500).json({
-      success: false,
-      err,
+    res.status(201).json({
+      user: user._id,
     });
+  } catch (err) {
+    let errors = {};
+
+    console.log(err)
+    
+    if (err.code === 11000) {
+      errors.email = "The Email is already registered";
+    }
+
+    if (err.name === "ValidationError") {
+      Object.keys(err.errors).forEach((key) => {
+        errors[key] = err.errors[key].message;
+      });
+    }
+
+    res.status(400).json(errors);
   }
 };
 
@@ -19,7 +32,7 @@ const loginUser = async (req, res) => {
   try {
     const { username, password } = req.body;
 
-    const user = await User.findOne({ name: username });
+    const user = await User.findOne({ username: username });
 
     let same = false;
 
