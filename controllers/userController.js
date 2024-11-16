@@ -1,4 +1,5 @@
 import User from "../models/User.js";
+import Photo from "../models/Photo.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
@@ -12,8 +13,8 @@ const createUser = async (req, res) => {
   } catch (err) {
     let errors = {};
 
-    console.log(err)
-    
+    console.log(err);
+
     if (err.code === 11000) {
       errors.email = "The Email is already registered";
     }
@@ -73,9 +74,12 @@ const createToken = (userId) => {
   });
 };
 
-const getDashboardPage = (req, res) => {
+const getDashboardPage = async (req, res) => {
+  const photos = await Photo.find({ user: res.locals.user._id });
+
   res.render("dashboard", {
     currentPage: "dashboard",
+    photos,
   });
 };
 
