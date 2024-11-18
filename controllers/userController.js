@@ -102,7 +102,7 @@ const getAllUsers = async (req, res) => {
 const getAUser = async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
-    const photos = await Photo.find({ user: req.params.id });
+    const photos = await Photo.find({ user: user._id });
 
     res.status(200).render("user", {
       user,
