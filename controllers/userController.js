@@ -84,6 +84,7 @@ const getDashboardPage = async (req, res) => {
   res.render("dashboard", {
     currentPage: "dashboard",
     photos,
+    user,
   });
 };
 
@@ -106,12 +107,18 @@ const getAllUsers = async (req, res) => {
 const getAUser = async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
+
+    const inFollowers = user.followers.some((follower) =>
+      follower.equals(res.locals.user._id)
+    );
+
     const photos = await Photo.find({ user: user._id });
 
     res.status(200).render("user", {
       user,
       photos,
       currentPage: "user",
+      inFollowers,
     });
   } catch (err) {
     res.status(500).json({
@@ -139,10 +146,7 @@ const follow = async (req, res) => {
       { new: true }
     );
 
-    res.status(200).json({
-      success: true,
-      user,
-    });
+    res.status(200).redirect(`/users/${req.params.id}`);
   } catch (err) {
     res.status(500).json({
       success: false,
@@ -169,10 +173,7 @@ const unFollow = async (req, res) => {
       { new: true }
     );
 
-    res.status(200).json({
-      success: true,
-      user,
-    });
+    res.status(200).redirect(`/users/${req.params.id}`);
   } catch (err) {
     res.status(500).json({
       success: false,
