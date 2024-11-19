@@ -5,6 +5,8 @@ import {
   getDashboardPage,
   getAllUsers,
   getAUser,
+  follow,
+  unFollow,
 } from "../controllers/userController.js";
 import { authenticateToken } from "../middlewares/authMiddleware.js";
 
@@ -15,5 +17,7 @@ router.post("/login", loginUser);
 router.get("/dashboard", authenticateToken, getDashboardPage);
 router.get("/", authenticateToken, getAllUsers);
 router.get("/:id", authenticateToken, getAUser);
+router.put("/:id/follow", authenticateToken, follow);
+router.put("/:id/unfollow", authenticateToken, unFollow);
 
 export default router;
