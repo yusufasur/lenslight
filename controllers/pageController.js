@@ -1,7 +1,25 @@
 import nodemailer from "nodemailer";
+import Photo from "../models/Photo.js";
+import User from "../models/User.js";
 
-const getIndexPage = (req, res) => {
-  res.render("index", { currentPage: "index" });
+const getIndexPage = async (req, res) => {
+  try {
+    const photos = await Photo.find().sort({ uploadedAt: -1 }).limit(6);
+    const numOfUsers = await User.countDocuments({});
+    const numOfPhotos = await Photo.countDocuments({});
+
+    res.render("index", {
+      currentPage: "index",
+      photos,
+      numOfUsers,
+      numOfPhotos,
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      err,
+    });
+  }
 };
 
 const getAboutPage = (req, res) => {
@@ -168,7 +186,7 @@ const sendMail = async (req, res) => {
         user: process.env.MAIL_USER,
         pass: process.env.MAIL_PASS,
       },
-    });    
+    });
 
     await transporter.sendMail({
       to: "bar@example.com, baz@example.com", // list of receivers
